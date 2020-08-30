@@ -1,8 +1,9 @@
 import React from "react";
 import { StyleSheet, Text, View, TouchableWithoutFeedback } from "react-native";
-import * as Facebook from "expo-auth-session/providers/facebook";
+import * as Facebook from "expo-facebook";
 
 import * as firebase from "firebase";
+import "firebase/auth";
 const firebaseConfig = {
   apiKey: "AIzaSyBy85Fd2IHOOpLe7wlNMyqw8cOJmRYuFdY",
   authDomain: "fluttr-rumble-capital.firebaseapp.com",
@@ -13,10 +14,12 @@ const firebaseConfig = {
   appId: "1:952545838591:web:abd0c3476bb833016953ca",
   measurementId: "G-W5EHKHYDFZ"
 };
+
 firebase.initializeApp(firebaseConfig);
 
 // Listen for authentication state to change.
 firebase.auth().onAuthStateChanged(user => {
+  console.log({ user });
   if (user != null) {
     console.log("We are authenticated now!");
   }
@@ -32,13 +35,18 @@ async function loginWithFacebook() {
   if (type === "success") {
     // Build Firebase credential with the Facebook access token.
     const credential = firebase.auth.FacebookAuthProvider.credential(token);
-
+    console.log({ credential });
     // Sign in with credential from the Facebook user.
     firebase
       .auth()
       .signInWithCredential(credential)
       .catch(error => {
+        console.log({ error });
         // Handle Errors here.
+      })
+      .then(data => {
+        var userId = firebase.auth();
+        console.log({ userId, data });
       });
   }
 }
